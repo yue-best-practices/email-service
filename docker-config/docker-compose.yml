@@ -8,8 +8,8 @@ services:
     environment:
       - "PORT=8001"
       - "MAX_QUEUE_LEN=10"
-      - "USER=service@eduyoko.com"
-      - "PASSWORD=ServiceYuan0610"
-      - "SMTP_HOST=smtp.mxhichina.com"
+      - "USER=test@qq.com"
+      - "PASSWORD=123456"
+      - "SMTP_HOST=smtp.qq.com"
       - "SMTP_PORT=25"
-      - "NICK_NAME=EduYoko"
+      - "NICK_NAME=Test"
