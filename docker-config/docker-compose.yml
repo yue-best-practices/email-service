@@ -1,0 +1,15 @@
+version: '2'
+services:
+  email-service:
+    image: email-service:0.0.1
+    network_mode: "bridge"
+    ports:
+      - "8001:8001"
+    environment:
+      - "PORT=8001"
+      - "MAX_QUEUE_LEN=10"
+      - "USER=service@eduyoko.com"
+      - "PASSWORD=ServiceYuan0610"
+      - "SMTP_HOST=smtp.mxhichina.com"
+      - "SMTP_PORT=25"
+      - "NICK_NAME=EduYoko"
