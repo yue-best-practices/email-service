@@ -6,6 +6,7 @@ import (
 	"os/signal"
 	"syscall"
 	"net/smtp"
+	"log"
 )
 
 type EmailObj struct{
@@ -33,9 +34,9 @@ func sendEmail(email *EmailObj){
 	auth:=smtp.PlainAuth("",email.user,email.password,email.smtpHost)
 	err:=smtp.SendMail(email.smtpHost+":"+email.smtpPort,auth,email.user,email.to,email.msg)
 	if err!=nil{
-		fmt.Printf("[task:%s] Send Mail Error:%v,",email.id,err)
+		log.Printf("[task:%s] Send Mail Error:%v,",email.id,err)
 	}else{
-		fmt.Printf("[task:%s] Send mail Success!",email.id)
+		log.Printf("[task:%s] Send mail Success!",email.id)
 	}
 }
 

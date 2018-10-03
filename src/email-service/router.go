@@ -14,8 +14,6 @@ import (
 func StartServer(){
 	go StartQueue()
 	api:=negroni.New()
-	api.Use(negroni.NewLogger())
-
 	router:=alien.New()
 	router.Put("/putTask/:id",putTask)
 	api.UseHandler(router)
