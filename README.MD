@@ -42,11 +42,11 @@ You need to configure the docker-compose.xml file according to your own informat
 
 Use the command `make run` or use the `docker-compose.xml` file.
 
-#### 5.Stop Server
+### 5.Stop Server
 
 Use the command `make stop` or use the `docker-compose.xml` file.
 
-#### 6.API Explain
+### 6.API Explain
 
 * Add an email task
 
@@ -80,7 +80,7 @@ Response:
 ```
 
 
-#### 7.Notification
+### 7.Notification
 
 Url: The `notifyUrl` that you set
 
