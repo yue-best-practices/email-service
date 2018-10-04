@@ -31,7 +31,7 @@ You need to configure the docker-compose.xml file according to your own informat
 | `PORT` | Http service port | `8001`
 | `MAX_QUEUE_LEN` | Mail queue channel buffer length. This number can increase the number of concurrent. | `5`
 | `RETRY_QUEUE_LEN` | Notification failure retry queue channel buffer length. | `5`
-| `RETRY_TIME_EXPRESS` | The notification fails the retry strategy. Multiple notifications are separated by the symbol `|`, and the system will send the notification again after the failure. (Unit: minute) | `5|15|30`
+| `RETRY_TIME_EXPRESS` | The notification fails the retry strategy. Multiple notifications are separated by the symbol <code>&#124;</code>, and the system will send the notification again after the failure. (Unit: minute) | <code>5&#124;15&#124;30</code>
 | `USER` | Default mail sender account. If not set, set it when adding a send mail task. |
 | `PASSWORD` | Default password of the sender's account |
 | `SMTP_HOST` | Default mail sending account host |
