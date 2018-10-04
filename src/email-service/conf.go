@@ -4,20 +4,43 @@ import (
 	"strconv"
 	"os"
 	"fmt"
+	"strings"
 )
 
 var (
 	Host = ""   // email service http host
 	Port = 8001 // email service http port
 	MaxQueueLen=5
+	RetryQueueLen=5
+	RetryTimeExpress="5|15|30"
+	RetryTimeDuration []int
 	DefaultUser = ""
 	DefaultPassword = ""
 	DefaultSmtpHost = ""
 	DefaultSmtpPort = ""
 	DefaultNickName = ""
+
+
 )
 
 func CheckEnvConf() error{
+
+	_retryTimeExpress:=os.Getenv("RETRY_TIME_EXPRESS")
+	if _retryTimeExpress!=""{
+		RetryTimeExpress=_retryTimeExpress
+	}
+
+
+	retryExpress:=strings.Split(RetryTimeExpress,"|")
+
+	RetryTimeDuration=make([]int,len(retryExpress))
+
+	for i,e := range retryExpress {
+		l,_:=strconv.Atoi(e)
+		if l>0{
+			RetryTimeDuration[i]=l
+		}
+	}
 
 	p:=os.Getenv("PORT")
 	if p!= ""{
@@ -33,6 +56,15 @@ func CheckEnvConf() error{
 		l,_:=strconv.Atoi(queueLen)
 		if l>0{
 			MaxQueueLen=l
+		}
+	}
+
+	retryQueueLen:=os.Getenv("RETRY_QUEUE_LEN")
+
+	if retryQueueLen!=""{
+		l,_:=strconv.Atoi(retryQueueLen)
+		if l>0{
+			RetryQueueLen=l
 		}
 	}
 
@@ -75,5 +107,7 @@ func DumpEnvConf(){
 	fmt.Printf("DefaultSmtpHost: %v \n",DefaultSmtpHost)
 	fmt.Printf("DefaultSmtpPort: %v \n",DefaultSmtpPort)
 	fmt.Printf("DefaultNickName: %v \n",DefaultNickName)
+	fmt.Printf("RetryQueueLen: %v \n",RetryQueueLen)
+	fmt.Printf("RetryTimeExpress: %v \n",RetryTimeExpress)
 }
 

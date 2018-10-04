@@ -13,7 +13,12 @@ import (
 
 func StartServer(){
 	go StartQueue()
+	go startRetryQueue()
+	setSignalHandler()
+
 	api:=negroni.New()
+	api.Use(negroni.NewLogger())
+
 	router:=alien.New()
 	router.Put("/putTask/:id",putTask)
 	api.UseHandler(router)
@@ -121,6 +126,14 @@ func putTask(w http.ResponseWriter,r *http.Request){
 		subject=_subject.(string)
 	}
 
+	var notifyUrl string
+
+	_notifyUrl:=m["notifyUrl"]
+	if _notifyUrl!=nil{
+		notifyUrl=_notifyUrl.(string)
+	}
+
+
 	var body string
 	_body:=m["body"]
 
@@ -144,7 +157,7 @@ func putTask(w http.ResponseWriter,r *http.Request){
 	msg:=[]byte("To: "+strings.Join(to,",")+"\r\nFrom: "+nickname+
 		"<"+user+">\r\nSubject: "+subject+"\r\n"+contentType+"\r\n\r\n"+body)
 
-	emailQueue<-&EmailObj{id,user,password,smtpHost,smtpPort,to,nickname,subject,body,contentType,msg}
+	emailQueue<-&EmailObj{id,user,password,smtpHost,smtpPort,to,nickname,subject,body,contentType,notifyUrl,msg}
 
 	WriteResponse(w,200,"OK")
 }
