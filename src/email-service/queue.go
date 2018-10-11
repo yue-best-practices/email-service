@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"strings"
 	"io/ioutil"
+	"crypto/tls"
 )
 
 type EmailObj struct{
@@ -25,6 +26,7 @@ type EmailObj struct{
 	contentType string
 	notifyUrl string
 	msg []byte
+	isSSL bool
 }
 
 var(
@@ -33,10 +35,71 @@ var(
 )
 
 
+func sendMailTLS(email *EmailObj) error{
+	tlsconfig:=&tls.Config{
+		InsecureSkipVerify:true,
+		ServerName:email.smtpHost,
+	}
+	conn,err:=tls.Dial("tcp",email.smtpHost+":"+email.smtpPort,tlsconfig)
+	if err!=nil{
+		return fmt.Errorf("DialConn:%v",err)
+	}
+
+	client,err:=smtp.NewClient(conn,email.smtpHost)
+	if err != nil {
+		return fmt.Errorf("Client:generateClient:%v", err)
+	}
+	defer client.Close()
+	auth:=smtp.PlainAuth("",email.user,email.password,email.smtpHost)
+	if auth!=nil{
+		if ok,_:=client.Extension("AUTH"); ok{
+			if err=client.Auth(auth);err!=nil{
+				return fmt.Errorf("Client:clientAuth:%v", err)
+			}
+		}
+	}
+
+	if err=client.Mail(email.user);err!=nil{
+		return fmt.Errorf("Client:clientMail:%v", err)
+	}
+
+	for _,addr:=range email.to{
+		if err=client.Rcpt(addr);err!=nil{
+			return fmt.Errorf("Client:Rcpt:%v", err)
+		}
+	}
+
+	w,err:=client.Data()
+	if err != nil {
+		return fmt.Errorf("Client:%v", err)
+	}
+	_,err=w.Write(email.msg)
+	if err != nil {
+		return fmt.Errorf("Client:WriterBody:%v", err)
+	}
+
+	if err=w.Close();err!=nil{
+		return fmt.Errorf("Client:CloseBody:%v", err)
+	}
+
+	return client.Quit()
+
+}
+
+
+func sendMail(email *EmailObj) error{
+	auth:=smtp.PlainAuth("",email.user,email.password,email.smtpHost)
+	return smtp.SendMail(email.smtpHost+":"+email.smtpPort,auth,email.user,email.to,email.msg)
+}
+
 
 func sendEmail(email *EmailObj){
-	auth:=smtp.PlainAuth("",email.user,email.password,email.smtpHost)
-	err:=smtp.SendMail(email.smtpHost+":"+email.smtpPort,auth,email.user,email.to,email.msg)
+	var err error
+	if email.isSSL{
+		err=sendMailTLS(email)
+	}else{
+		err=sendMail(email)
+	}
 
 	externalId:=email.id
 	status:="SUCCESS"

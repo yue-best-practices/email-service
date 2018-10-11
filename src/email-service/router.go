@@ -149,6 +149,14 @@ func putTask(w http.ResponseWriter,r *http.Request){
 		contentType=_contentType.(string)
 	}
 
+	isSSL:=false
+	_isSSL:=m["isSSL"]
+	if _isSSL!=nil{
+		isSSL=_isSSL.(bool)
+	}
+
+
+
 	if user=="" || password=="" || smtpHost=="" || smtpPort=="" || len(to)==0 || nickname =="" || subject == "" || body==""{
 		WriteResponse(w,104,"Invalid Parameter")
 		return
@@ -157,7 +165,7 @@ func putTask(w http.ResponseWriter,r *http.Request){
 	msg:=[]byte("To: "+strings.Join(to,",")+"\r\nFrom: "+nickname+
 		"<"+user+">\r\nSubject: "+subject+"\r\n"+contentType+"\r\n\r\n"+body)
 
-	emailQueue<-&EmailObj{id,user,password,smtpHost,smtpPort,to,nickname,subject,body,contentType,notifyUrl,msg}
+	emailQueue<-&EmailObj{id,user,password,smtpHost,smtpPort,to,nickname,subject,body,contentType,notifyUrl,msg,isSSL}
 
 	WriteResponse(w,200,"OK")
 }
