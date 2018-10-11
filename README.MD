@@ -58,17 +58,21 @@ Param:
 
 ```json
 {
-	"user":"service@eduyoko.com",
-	"password":"ServiceYuan0610",
+	"user":"test@test.com",
+	"password":"123456passwd",
 	"smtpHost":"smtp.mxhichina.com",
-	"smtpPort":"25",
+	"smtpPort":"465",
 	"contentType":"Content-Type: text/html; charset=UTF-8",
 	"to":["test1@test.com","test2@test.com"],
 	"subject":"Test",
 	"body":"<h1>Test</h1>Hello,world!",
-	"notifyUrl":"http://127.0.0.1:8000/test"
+	"notifyUrl":"http://127.0.0.1:8000/test",
+	"isSSL":true
 }
 ```
+
+> If you need to send mail via SSL, set the `isSSL` parameter to `true`, otherwise you will not pass this parameter.
+
 
 Response:
 
